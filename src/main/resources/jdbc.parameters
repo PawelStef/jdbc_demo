@@ -1,0 +1,7 @@
+# komentarz
+jdbc.username=root
+jdbc.password=root
+jdbc.database.name=jdbc_student
+jdbc.database.host=localhost
+jdbc.database.port=3306
+
