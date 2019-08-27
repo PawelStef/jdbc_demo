@@ -1,9 +1,7 @@
 package javagda25.sda;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,30 +13,55 @@ public class StudentDao {
 
     private MysqlConnection mysqlConnection;
 
-    public StudentDao() {
+    public StudentDao() throws IOException, SQLException {
         mysqlConnection = new MysqlConnection();
+        createTableIfNotExist();
     }
+
+    private void createTableIfNotExist() throws SQLException {
+        try (Connection connection = mysqlConnection.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(CREATE_TABLE_QUERY)) {
+
+                statement.execute();
+            }
+        }
+    }
+
 
     public void insertStudent(Student student1) throws SQLException {
         try (Connection connection = mysqlConnection.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(INSERT_QUERY)) {
+            try (PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, student1.getName());
                 statement.setInt(2, student1.getAge());
                 statement.setDouble(3, student1.getAverage());
                 statement.setBoolean(4, student1.getAlive());
-                statement.execute();
+
+              //  boolean succes = statement.execute();
+                int affectedRecord = statement.executeUpdate();
+
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if(resultSet.next()){
+                    Long generatedId = resultSet.getLong(1);
+                    System.out.println("Został utworzony rekort o id "+generatedId);
+                }
             }
         }
     }
 
-    public void removeStudent(int id) throws SQLException {
+    public boolean removeStudent(int id) throws SQLException {
         try (Connection connection = mysqlConnection.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(REMOVE_QUERY)) {
                 statement.setInt(1, id);
-                statement.execute();
+                int affectedRecord = statement.executeUpdate();
 
+                if(affectedRecord >0){
+                    System.out.println("Usunięto rekord o id "+id);
+                    return true;
+                }
             }
         }
+        System.out.println("nic nie usunięto");
+        return false;
     }
 
 
@@ -106,6 +129,5 @@ public class StudentDao {
             }
         }
     }
-
 
 }

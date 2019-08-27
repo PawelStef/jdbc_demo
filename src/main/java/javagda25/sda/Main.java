@@ -2,8 +2,8 @@ package javagda25.sda;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.io.IOException;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -11,7 +11,6 @@ public class Main {
 
     //1.Tworzymy schema: jdbc_students
     //2.
-
     // CREATE TABLE  IF NOT EXISTS `students` (
     //`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     //`name` VARCHAR(255) NOT NULL,
@@ -19,25 +18,26 @@ public class Main {
     //`average` DOUBLE NOT NULL,
     //`alive` TINYINT NOT NULL
     //)
-
     /*
     INSERT INTO `students` (`name`, `age`, `average`, `alive`)
     VALUES
     ( ? , ? , ? , ? )
     */
 
-
     public static void main(String[] args) {
 
-        StudentDao studentDao ;
+        StudentDao studentDao = null;
 
 
         try{
             studentDao= new StudentDao();
 
-        }catch (Exception e){
-            System.err.println("Error"+e.getMessage());
+        }catch (SQLException e){
+            System.err.println("Error "+e.getMessage());
+            e.printStackTrace();
             return;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 

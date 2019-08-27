@@ -21,8 +21,8 @@ public class MysqlConnectionParameters {
     public MysqlConnectionParameters() throws IOException {
         loadConfigurationFrom(PROPERTIES_FILE_NAME);
 
-        dbHost = loadParameter("jdbc.databace.host");
-        dbPort = loadParameter("jdbc.databace.port");
+        dbHost = loadParameter("jdbc.database.host");
+        dbPort = loadParameter("jdbc.database.port");
         dbUserName = loadParameter("jdbc.username");
         dbPassword = loadParameter("jdbc.password");
         dbName = loadParameter("jdbc.database.name");
